@@ -33,3 +33,9 @@ compile_commands.json
 # Temporary and log files
 *.tmp
 *.temp
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+

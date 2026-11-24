@@ -78,6 +78,8 @@ foreach(tgt ${TASK_TARGETS})
     lab_set_warnings(${tgt})
 endforeach()
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 # Core static library for home project
 add_library(lab_core STATIC
     src/common.cpp
@@ -107,6 +109,20 @@ if(WIN32)
 endif()
 
 lab_set_warnings(lab_core)
+
+# Shared dynamic library for Python / GUI bindings
+add_library(lab_crypto SHARED
+    src/c_api.cpp
+)
+target_compile_definitions(lab_crypto PRIVATE BUILDING_LAB_CRYPTO_DLL)
+target_include_directories(lab_crypto PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(lab_crypto PRIVATE lab_core)
+if(WIN32)
+    target_link_libraries(lab_crypto PRIVATE ws2_32 crypt32)
+endif()
+lab_set_warnings(lab_crypto)
 
 # Main executable named lab03
 add_executable(lab03 src/main.cpp)
